@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import Draggable from 'react-draggable';
 import styled from 'styled-components';
 
-import logo from './assets/logo.png';
-import inside from './assets/inside2x.png';
-import repeatableBackground from './assets/checkerboard.png'
+import logo from '../assets/logo.png';
+import inside from '../assets/inside2x.png';
+import repeatableBackground from '../assets/checkerboard.png'
 
 const ORIGIN_X = "14%";
 const ORIGIN_Y = "150px";
@@ -20,8 +20,8 @@ const Box = styled.div`
   border: 1px solid #999;
   border-radius: 1px;
   position: absolute;
-  left: ${ORIGIN_X};
-  top: ${ORIGIN_Y};
+  left: ${props => props.left? props.left : "0"};
+  top: ${props => props.top? props.top : "0"};
   transition: ${props => props.dragging ? "" : "550ms transform ease"};
   cursor: move;
 `;
@@ -32,8 +32,8 @@ const Square = styled.div`
   height: 194px;
   border-radius: 1px;
   position: absolute;
-  left: ${props => props.position.x};
-  top: ${props => props.position.y};
+  left: ${props => props.left? props.left : "0"};
+  top: ${props => props.top? props.top : "0"};
   display: ${props => props.hidden ? "none" : "flex"};
 `
 
@@ -83,19 +83,15 @@ const ScaledImage = styled.img`
   max-height:100%;
 `
 
-type Coordinate = {
-  x: number,
-  y: number,
-}
-
 type Props = {
   bounceBack?: bool,
   hiddenImage?: string,
+  title?: string,
+  left?: string,
+  top?: string,
+  children: React.Node,
   width: number,
   height: number,
-  title?: string,
-  startingPosition: Coordinate,
-  children: React.Node,
 };
 
 class DraggableWindow extends Component {
@@ -110,7 +106,9 @@ class DraggableWindow extends Component {
     this.state = {
       dragging: false,
       minimized: false,
-      controlledPosition: props.startingPosition,
+      controlledPosition: {
+        x: 0, y: 0
+      },
     };
   }
 
@@ -135,13 +133,17 @@ class DraggableWindow extends Component {
   }
 
   render() {
-    const { controlledPosition, title, children } = this.state;
+    const { controlledPosition } = this.state;
+    const { hiddenImage, title, children, left, top } = this.props;
+
     const backgroundImage = (
       <Square
+        left={left}
+        top={top}
         position={controlledPosition}
         hidden={this.state.minimized}
       >
-        <ScaledImage src={inside}/>
+        <ScaledImage src={hiddenImage}/>
       </Square>
     )
 
@@ -156,13 +158,13 @@ class DraggableWindow extends Component {
 
     return (
       <div onTouchMove={(e) => e.preventDefault()}>
-        {this.props.hiddenImage? backgroundImage : null}
+        {hiddenImage? backgroundImage : null}
         <Draggable
           position={controlledPosition}
           onStart={(e, position) => this.onStart(e, position)}
           onStop={(e, position) => this.onStop(e, position)}
         >
-          <Box dragging={this.state.dragging}>
+          <Box left={left} top={top} dragging={this.state.dragging}>
             {titleBar}
             <Content hidden={this.state.minimized}>
               {children}
@@ -174,8 +176,4 @@ class DraggableWindow extends Component {
   }
 }
 
-<DraggableWindow>
-  <ScaledImage src={logo}/>
-</DraggableWindow>
-
-export default App;
+export default DraggableWindow;
