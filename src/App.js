@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import styled from 'styled-components';
 
 import logo from './assets/logo.png';
-import inside from './assets/inside2x.png';
+import inside from './assets/fullUnder.svg';
 import repeatableBackground from './assets/checkerboard.png'
-import DraggableWindow from './components/DraggableWindow'
+import {StickyDraggableWindow} from './components/DraggableWindow'
 
 const ORIGIN_X = "14%";
 const ORIGIN_Y = "150px";
@@ -19,51 +19,31 @@ const ScaledImage = styled.img`
   max-height:100%;
 `
 
+const CenteredBox = styled.div`
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  height: ${props => props.height ? props.height+"px" : ""};
+  width: ${props => props.width ? props.width+"px" : ""};
+  padding: 10px;
+`
+
 class App extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isDragging: false,
-      minimized: false,
-      controlledPosition: {
-        x: 0, y: 0
-      }
-    };
-  }
-
-  onStart(e, position) {
-    this.setState({
-      isDragging: true
-    })
-  }
-
-  resetBox(e, position) {
-    this.setState({
-      isDragging: false,
-      controlledPosition: {x:0, y:0}
-    });
-  }
-
-  changeView(e) {
-    this.setState({
-      minimized: !this.state.minimized
-    });
-  }
-
   render() {
     return (
       <Container className="App">
-        <DraggableWindow
-          bounceBack={true}
+        <StickyDraggableWindow
+          bounceBack={false}
           hiddenImage={inside}
           title="oglogo"
-          width={180}
-          height={194}
           left={ORIGIN_X}
           top={ORIGIN_Y}
         >
-          <ScaledImage src={logo}/>
-        </DraggableWindow>
+          <CenteredBox height={150} width={160}>
+            <ScaledImage src={logo}/>
+          </CenteredBox>
+        </StickyDraggableWindow>
       </Container>
     );
   }
