@@ -32,6 +32,7 @@ const BarText = styled.div`
 
 const ActionButton = BarText.extend`
   margin-right: 5px;
+  margin-left: 5px;
   cursor: pointer;
   font-size: 22px;
   line-height: ${BAR_FONT_SIZE};
